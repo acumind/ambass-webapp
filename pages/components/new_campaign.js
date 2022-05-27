@@ -4,7 +4,9 @@ import { BigNumber, Contract, providers, utils } from "ethers";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "../../styles/Home.module.css";
-import nProgress from "nprogress";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 import Header from "./Header";
 import Web3Modal from "web3modal";
@@ -32,10 +34,6 @@ const airdrop_options = [
     value: "50",
   },
 ];
-
-Router.events.on("routeChangeStart", nProgress.start);
-Router.events.on("routeChangeError", nProgress.done);
-Router.events.on("routeChangeComplete", nProgress.done);
 
 export default function Campaign() {
   const [campaignStartDate, setCampaignStartDate] = useState(new Date());
@@ -107,9 +105,13 @@ export default function Campaign() {
       setLoading(false);
       //router.push("/");
       console.log("Campaign SubTokens Created by ", signerAddress);
+      toast.success(
+        `Campaign ${subTokenName} Created. ${subTokenTicker} Minted.`
+      );
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error(`Campaign ${subTokenName} Creation Failed.`);
     }
   };
 
@@ -286,6 +288,17 @@ export default function Campaign() {
           </div>
         </div>
       </main>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

@@ -5,6 +5,9 @@ import { BigNumber, Contract, providers, utils } from "ethers";
 import styles from "../../styles/Home.module.css";
 import Header from "./Header";
 import Web3Modal from "web3modal";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import { AMBASS_CONTRACT_ADDRESS, AMBASS_CONTRACT_ABI } from "../../constants";
 
 export default function MyCampaignList() {
@@ -91,10 +94,12 @@ export default function MyCampaignList() {
       await tx.wait();
       setLoading(false);
       //router.push("/");
+      toast.success(`${subTokenTicker} AirDropped.`);
       console.log("AirDrop Completed.");
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error(`${subTokenTicker} AirDropping Failed.`);
     }
   };
 
@@ -115,10 +120,12 @@ export default function MyCampaignList() {
       await tx.wait();
       setLoading(false);
       router.push("/");
-      console.log("Got `{subTokenTicker}` and Joined Campaign");
+      //console.log("Got `{subTokenTicker}` and Joined Campaign");
+      toast.success(`${subTokenTicker} Distroed.`);
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error(`${subTokenTicker} Distro Failed.`);
     }
   };
 
@@ -190,6 +197,17 @@ export default function MyCampaignList() {
           })}
         </div>
       </main>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

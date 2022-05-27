@@ -6,6 +6,9 @@ import styles from "../../styles/Home.module.css";
 import Header from "./Header";
 import Web3Modal from "web3modal";
 import { AMBASS_CONTRACT_ADDRESS, AMBASS_CONTRACT_ABI } from "../../constants";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CampaignList() {
   const [subTokens, setSubTokens] = useState([]);
@@ -53,6 +56,7 @@ export default function CampaignList() {
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error("Error!");
     }
   };
 
@@ -89,10 +93,12 @@ export default function CampaignList() {
       await tx.wait();
       setLoading(false);
       //router.push("/");
-      console.log("Got  %s and Joined Campaign", subTokenTicker);
+      //console.log("Got  %s and Joined Campaign", subTokenTicker);
+      toast.success(`${subTokenTicker} SubToken Minted!! Campaign Joined.`);
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error(`Campaign Not Joining! ${subTokenTicker}  Minting Failed! `);
     }
   };
 
@@ -131,7 +137,7 @@ export default function CampaignList() {
                   <button
                     disabled={loading}
                     value={token}
-                    className=" flex mt-4 group relative w-30 flex justify-center
+                    className=" flex mt-4 group relative w-30  justify-center
                                 py-2 px-4 border border-transparent text-sm font-medium
                                 rounded-md text-white bg-blue-300 hover:bg-indigo-300
                                 focus:outline-none focus:ring-2 focus:ring-offset-2
@@ -145,6 +151,17 @@ export default function CampaignList() {
           })}
         </div>
       </main>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

@@ -13,8 +13,11 @@
 }
 
 .footer {
-  display: flex;
-  flex: 1;
+  postion: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
   padding: 2rem 0;
   border-top: 1px solid #eaeaea;
   justify-content: center;

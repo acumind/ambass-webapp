@@ -2,6 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { BigNumber, Contract, providers, utils } from "ethers";
 import Web3Modal from "web3modal";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
@@ -89,12 +92,15 @@ export default function Home() {
 
       await tx.wait();
       setLoading(false);
+
+      toast.success("AMB Token Minted Successfuly");
       //window.alert("Minted AMB Token");
       await getBalanceOfAMBTokens();
       await getTotalTokenMinted();
     } catch (err) {
       console.error(err);
       setLoading(false);
+      toast.error("AMB Minting Failed! Please Try Again.");
     }
   };
 
@@ -221,6 +227,17 @@ export default function Home() {
           </Link>
         </div>
       </main>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
       <footer className={styles.footer}>
         <a
