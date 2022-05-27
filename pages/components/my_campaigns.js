@@ -36,6 +36,7 @@ export default function MyCampaignList() {
 
   const getAllSubTokensByAddress = async () => {
     console.log("getAllSubTokensByAddress()");
+    setLoading(true);
     try {
       const signer = await getSigner();
       const address = await signer.getAddress();
@@ -46,13 +47,14 @@ export default function MyCampaignList() {
       );
 
       const subTokenArray = await tokenContract.getSubTokensByAddress(address);
-      setLoading(true);
+
       //await subTokenArray;
       console.log(subTokenArray);
       setSubTokens([...subTokenArray]);
       setLoading(false);
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -92,6 +94,7 @@ export default function MyCampaignList() {
       console.log("AirDrop Completed.");
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -115,6 +118,7 @@ export default function MyCampaignList() {
       console.log("Got `{subTokenTicker}` and Joined Campaign");
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -134,7 +138,7 @@ export default function MyCampaignList() {
   };
   return (
     <div className={styles.container}>
-      <Header />
+      <Header isLoading={loading} />
       <main>
         <div>
           {subTokens.map((token, idx) => {
@@ -144,6 +148,7 @@ export default function MyCampaignList() {
                   <span className="px-2 text-3xl">{token}</span>
 
                   <button
+                    disabled={loading}
                     value={token}
                     onClick={handleAirDrop}
                     className=" flex mt-3 group relative w-30  justify-center
@@ -156,6 +161,7 @@ export default function MyCampaignList() {
                   </button>
                   <div>
                     <input
+                      disabled={loading}
                       type="checkbox"
                       id="rand-airdrop"
                       name="Random AirDrop"
@@ -167,6 +173,7 @@ export default function MyCampaignList() {
                     Auto
                   </div>
                   <button
+                    disabled={loading}
                     value={token}
                     onClick={handleDistro}
                     className=" flex mt-4 group relative w-30 flex justify-center

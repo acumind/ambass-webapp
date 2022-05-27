@@ -6,6 +6,7 @@ import Web3Modal from "web3modal";
 import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
 import Header from "./components/Header";
+
 import { AMBASS_CONTRACT_ADDRESS, AMBASS_CONTRACT_ABI } from "../constants";
 
 export default function Home() {
@@ -73,6 +74,7 @@ export default function Home() {
     }
   };
   const mintAMBToken = async (amount) => {
+    setLoading(true);
     try {
       const signer = await getSigner();
       const tokenContract = new Contract(
@@ -84,7 +86,7 @@ export default function Home() {
       const tx = await tokenContract.mint(amount, {
         value: utils.parseEther(value.toString()),
       });
-      setLoading(true);
+
       await tx.wait();
       setLoading(false);
       //window.alert("Minted AMB Token");
@@ -92,6 +94,7 @@ export default function Home() {
       await getTotalTokenMinted();
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -112,57 +115,60 @@ export default function Home() {
 
   const displayConnectButton = () => {
     if (isWalletConnected) {
-      if (loading) {
-        return (
+      // if (loading) {
+      //   return (
+      //     // <div className={styles.card}>
+      //     //   <button>Loading..</button>
+      //     // </div>
+      //     <LoadingSpinner />
+      //   );
+      // } else {
+      return (
+        <div className={styles.grid}>
           <div className={styles.card}>
-            <button>Loading..</button>
+            <button>
+              <h2>Wallet Connected</h2>
+            </button>
+            <p>
+              You have {utils.formatEther(balanceOfAMBTokens).toString()}/
+              {utils.formatEther(tokensMinted).toString()} AMB Tokens
+            </p>
+            <p>Creaet campaigns using these AMB tokens.</p>
           </div>
-        );
-      } else {
-        return (
-          <div className={styles.grid}>
-            <div className={styles.card}>
-              <button>
-                <h2>Wallet Connected</h2>
-              </button>
-              <p>
-                You have {utils.formatEther(balanceOfAMBTokens).toString()}/
-                {utils.formatEther(tokensMinted).toString()} AMB Tokens
-              </p>
-              <p>Creaet campaigns using these AMB tokens.</p>
-            </div>
-            {/* <div className={styles.button}>Address: {getWalletAddress()}</div> */}
-            <div className={styles.card}>
-              <input
-                type="number"
-                placeholder="AMB Token Amount to Mint"
-                onChange={(e) => setTokenAmount(BigNumber.from(e.target.value))}
-                className="appearance-none rounded-none relative block
+          {/* <div className={styles.button}>Address: {getWalletAddress()}</div> */}
+          <div className={styles.card}>
+            <input
+              type="number"
+              placeholder="AMB Token Amount to Mint"
+              onChange={(e) => setTokenAmount(BigNumber.from(e.target.value))}
+              className="appearance-none rounded-none relative block
                   w-full px-6 py-2 border border-gray-300
                   placeholder-gray-500 text-gray-900 rounded-t-md
                   focus:outline-none focus:ring-indigo-500
                   focus:border-indigo-500 focus:z-10 sm:text-sm"
-              />
+            />
 
-              <button
-                disabled={!(tokenAmount > 0)}
-                onClick={() => mintAMBToken(tokenAmount)}
-                className="mt-4 group relative w-full flex justify-center
+            <button
+              disabled={!(tokenAmount > 0) || loading}
+              onClick={() => mintAMBToken(tokenAmount)}
+              className="mt-4 group relative w-full flex justify-center
                 py-2 px-4 border border-transparent text-sm font-medium
                 rounded-md text-white bg-indigo-600 hover:bg-indigo-700
                 focus:outline-none focus:ring-2 focus:ring-offset-2
                 focus:ring-indigo-500"
-              >
-                Get AMB Token
-              </button>
-            </div>
+            >
+              Get AMB Token
+            </button>
           </div>
-        );
-      }
+        </div>
+      );
+      //}
     } else {
       return (
         <div className={styles.card}>
-          <button onClick={connectWallet}>Connect Wallet</button>
+          <button onClick={connectWallet} disabled={loading}>
+            Connect Wallet
+          </button>
         </div>
       );
     }
@@ -188,7 +194,7 @@ export default function Home() {
         <meta name="Ambass Web App" content="Ambass Web App" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Header isLoading={loading} />
       <main className={styles.main}>
         <div className="bg-zinc-100 pt-10  w-full">
           <h1 className={styles.title}>Ambass!</h1>
@@ -200,14 +206,14 @@ export default function Home() {
         {/* <div className={styles.card}>{displayConnectButton()}</div> */}
         {displayConnectButton()}
         <div className={styles.grid}>
-          <Link href="/components/new_campaign">
+          <Link href={!loading ? "/components/new_campaign" : "#"}>
             <a className={styles.card}>
               <h2>Create Campaign &rarr;</h2>
               <p>Create and Configure your public campaign.</p>
             </a>
           </Link>
 
-          <Link href="/components/list_campaign">
+          <Link href={!loading ? "/components/list_campaign" : "#"}>
             <a className={styles.card}>
               <h2>My Campaigns &rarr;</h2>
               <p>View And Analyze All Your Campaigns</p>

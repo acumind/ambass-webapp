@@ -36,6 +36,7 @@ export default function MyCampaignList() {
 
   const getAllJoinedSubTokensByAddress = async () => {
     console.log("getAllJoinedSubTokensByAddress()");
+    setLoading(true);
     try {
       const signer = await getSigner();
       const address = await signer.getAddress();
@@ -46,13 +47,14 @@ export default function MyCampaignList() {
       );
 
       const subTokenArray = await tokenContract.getJoinedSubTokens(address);
-      setLoading(true);
+
       //await subTokenArray;
       console.log(subTokenArray);
       setSubTokens([...subTokenArray]);
       setLoading(false);
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -88,10 +90,11 @@ export default function MyCampaignList() {
 
       await tx.wait();
       setLoading(false);
-      router.push("/");
+      //router.push("/");
       console.log("Got `{subTokenTicker}` and Joined Campaign");
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -102,7 +105,7 @@ export default function MyCampaignList() {
 
   return (
     <div className={styles.container}>
-      <Header />
+      <Header isLoading={loading} />
       <main>
         <div>
           {subTokens.map((token, idx) => {

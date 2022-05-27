@@ -105,10 +105,11 @@ export default function Campaign() {
 
       await tx.wait();
       setLoading(false);
-      router.push("/");
+      //router.push("/");
       console.log("Campaign SubTokens Created by ", signerAddress);
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -120,7 +121,7 @@ export default function Campaign() {
 
   return (
     <div className={styles.container}>
-      <Header />
+      <Header isLoading={loading} />
       <main className={styles.main}>
         <div className="min-h-full flex items-center justify-center py-4 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">

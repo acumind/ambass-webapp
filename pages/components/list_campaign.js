@@ -35,6 +35,7 @@ export default function CampaignList() {
 
   const getAllSubTokens = async () => {
     console.log("getAllSubTokens()");
+    setLoading(true);
     try {
       const signer = await getProvider();
       const tokenContract = new Contract(
@@ -44,13 +45,14 @@ export default function CampaignList() {
       );
 
       const subTokenArray = await tokenContract.getSubTokens();
-      setLoading(true);
+
       //await subTokenArray;
       console.log(subTokenArray);
       setSubTokens([...subTokenArray]);
       setLoading(false);
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -90,6 +92,7 @@ export default function CampaignList() {
       console.log("Got  %s and Joined Campaign", subTokenTicker);
     } catch (err) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -100,7 +103,7 @@ export default function CampaignList() {
 
   return (
     <div className={styles.container}>
-      <Header />
+      <Header isLoading={loading} />
       <main>
         <div>
           {subTokens.map((token, idx) => {
@@ -114,6 +117,7 @@ export default function CampaignList() {
                   <span className="px-2 text-3xl">{token}</span>
 
                   <button
+                    disabled={loading}
                     value={token}
                     onClick={handleJoin}
                     className=" flex mt-4 group relative w-30 flex justify-center
@@ -125,6 +129,7 @@ export default function CampaignList() {
                     Join
                   </button>
                   <button
+                    disabled={loading}
                     value={token}
                     className=" flex mt-4 group relative w-30 flex justify-center
                                 py-2 px-4 border border-transparent text-sm font-medium
